@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: vpn-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vpn_user
+      POSTGRES_PASSWORD: vpn_pass
+      POSTGRES_DB: vpn_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vpn_user -d vpn_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  vpn-bot:
+    build: .
+    container_name: vpn-telegram-bot
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - VPN_SSH_KEY_PATH=/root/.ssh/vpn_remote_key
+      - XRAY_HOST=185.221.22.150
+      - REMOTE_XRAY_HOST=185.221.22.150
+    volumes:
+      - ./logs:/app/logs
+      - /root/.ssh/vpn_remote_key:/root/.ssh/vpn_remote_key:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postgres_data: {}

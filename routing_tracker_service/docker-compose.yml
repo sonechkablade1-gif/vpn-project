@@ -1,0 +1,23 @@
+services:
+  routing-tracker:
+    build: .
+    container_name: vpn-routing-tracker
+    restart: unless-stopped
+    network_mode: "host"
+    env_file:
+      - ../.env
+    environment:
+      - XRAY_API_HOST=127.0.0.1:8080
+      - REMOTE_XRAY_HOST=194.48.142.252
+      - REMOTE_XRAY_USER=root
+      - VPN_SSH_KEY_PATH=/root/.ssh/vpn_remote_key
+      - INTERVAL_MINUTES=60
+    volumes:
+      - ./logs:/app/logs
+      - /root/.ssh/vpn_remote_key:/root/.ssh/vpn_remote_key:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
