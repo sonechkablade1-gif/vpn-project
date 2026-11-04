@@ -11,29 +11,6 @@ def main_keyboard():
     return markup
 
 
-def make_back_inline_button_markup() -> telebot.types.InlineKeyboardMarkup:
-    markup = telebot.types.InlineKeyboardMarkup()
-    itembtn_str = telebot.types.InlineKeyboardButton("Назад", callback_data="back")
-    markup.add(itembtn_str)
-    return markup
-
-
-def make_connect_markup() -> telebot.types.InlineKeyboardMarkup:
-    markup = telebot.types.InlineKeyboardMarkup()
-    connect_button = telebot.types.InlineKeyboardButton("Подключиться", callback_data="connect_vpn")
-    markup.add(connect_button)
-    itembtn_str = telebot.types.InlineKeyboardButton("Назад", callback_data="back")
-    markup.add(itembtn_str)
-    return markup
-
-
-def make_payment_markup() -> telebot.types.InlineKeyboardMarkup:
-    markup = telebot.types.InlineKeyboardMarkup()
-    back = telebot.types.InlineKeyboardButton("◀️ Назад", callback_data="menu")
-    markup.add(back)
-    return markup
-
-
 def make_subscription_status_markup(is_active: bool) -> telebot.types.InlineKeyboardMarkup:
     markup = telebot.types.InlineKeyboardMarkup()
     back = telebot.types.InlineKeyboardButton("◀️ Назад", callback_data="menu")
@@ -60,10 +37,3 @@ def make_help_markup() -> telebot.types.InlineKeyboardMarkup:
     return markup
 
 
-def make_speedtest_markup() -> telebot.types.InlineKeyboardMarkup:
-    markup = telebot.types.InlineKeyboardMarkup()
-    speedtest_button = telebot.types.InlineKeyboardButton("Speedtest", url="https://www.speedtest.net/")
-    back_button = telebot.types.InlineKeyboardButton("Назад", callback_data="back")
-    markup.add(speedtest_button)
-    markup.add(back_button)
-    return markup

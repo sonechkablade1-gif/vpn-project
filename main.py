@@ -1,7 +1,6 @@
 import os
 import time
 import datetime
-import uuid
 import sys
 
 import telebot
@@ -21,9 +20,6 @@ from src.const import HOST_IDS
 load_dotenv(override=True)
 
 # ─── Конфигурация подписки ────────────────────────────────────────────────
-SUBSCRIPTION_PRICE_RUB = 200       # Стоимость подписки в рублях
-SUBSCRIPTION_DAYS      = 30        # Длительность подписки в днях
-SUBSCRIPTION_LABEL     = "VPN на 1 месяц"
 GRACE_PERIOD_DAYS      = 3         # Грейс-период для старых пользователей
 # ──────────────────────────────────────────────────────────────────────────
 
@@ -155,20 +151,6 @@ def ensure_user_migrated(user_id, username=None):
         end = migrate_legacy_subscription(user_id, username=username)
         return True, end
     return False, None
-
-
-def get_subscription_end(user_id):
-    """Возвращает дату окончания ПЛАТНОЙ подписки или None."""
-    with engine.begin() as conn:
-        result = conn.execute(text("""
-            SELECT date_end FROM vpn_subs
-            WHERE user_id = :uid
-              AND date_end < NOW() + INTERVAL '50 years'
-            ORDER BY date_end DESC
-            LIMIT 1
-        """), {"uid": user_id})
-        row = result.fetchone()
-        return row[0] if row else None
 
 
 def is_user_exists(user_id) -> bool:

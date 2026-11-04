@@ -67,17 +67,6 @@ def add_url_to_db(eng, user_id, host_id, url):
         print(f"✅ URL для пользователя {user_id} сохранен в БД")
 
 
-def get_user_end_time(eng, user_id):
-    """Возвращает дату окончания подписки."""
-    with eng.begin() as conn:
-        result = conn.execute(
-            text("SELECT date_end FROM vpn_subs WHERE user_id = :uid ORDER BY date_end DESC LIMIT 1"),
-            {"uid": user_id},
-        )
-        row = result.fetchone()
-        return row[0] if row else None
-
-
 def add_payment_to_db(eng, user_id, amount, currency, payment_id, days, period_name):
     """Сохраняет платёж в таблицу payments."""
     with eng.begin() as conn:
